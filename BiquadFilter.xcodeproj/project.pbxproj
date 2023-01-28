@@ -206,6 +206,7 @@
 		C4F07734223ACB91008FFF06 /* Synth.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = Synth.aif; sourceTree = "<group>"; };
 		C6DC5208287CAC940AAA55F3 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		E43C89A9297DF84F00FA6205 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		E43C89AC297E016100FA6205 /* BiquadCoefficientCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BiquadCoefficientCalculator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -398,6 +399,7 @@
 			children = (
 				C4F004A52239B2070014E248 /* BiquadFilterAU.swift */,
 				C4F0772D223AACBB008FFF06 /* BiquadFilterAUParameters.swift */,
+				E43C89AC297E016100FA6205 /* BiquadCoefficientCalculator.swift */,
 				C4BEE7E422236E99001E6B6D /* Support */,
 			);
 			path = AudioUnit;
