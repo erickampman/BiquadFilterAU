@@ -11,7 +11,6 @@ import Accelerate
 // returns a set of biquadratic filter coefficients from a center frequency, Q,
 // and — in the case of a peak EQ filter — a db gain.
 struct BiquadCoefficientCalculator {
-    
     // The `FilterType` enumeration defines the filter types that the
     // coefficient calculator supports.
     enum FilterType: String, CaseIterable, Identifiable {

@@ -10,6 +10,7 @@
             <connections>
                 <outlet property="compactView" destination="usM-Ct-ETz" id="6tA-ZU-CPN"/>
                 <outlet property="expandedView" destination="R36-UR-7aV" id="2Ns-GU-3Ee"/>
+                <outlet property="filterTypePopup" destination="Lye-Jv-Qii" id="zhc-Nt-RJ5"/>
                 <outlet property="filterView" destination="oPI-wC-N8q" id="PWT-IO-Fp1"/>
                 <outlet property="frequencyTextField" destination="gNr-9C-Jcl" id="I5Y-My-cGT"/>
                 <outlet property="resonanceTextField" destination="mNt-J3-k64" id="hem-e4-IoW"/>
@@ -36,11 +37,36 @@
                 <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oPI-wC-N8q" customClass="FilterView" customModule="BiquadFilterFramework">
                     <rect key="frame" x="8" y="8" width="784" height="455"/>
                 </customView>
+                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Lye-Jv-Qii">
+                    <rect key="frame" x="17" y="467" width="147" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="140" id="Fnk-kN-Abc"/>
+                    </constraints>
+                    <popUpButtonCell key="cell" type="push" title="All Pass" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="mgY-TH-ASE" id="822-od-1IE">
+                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="menu"/>
+                        <menu key="menu" id="4CS-XZ-EPx">
+                            <items>
+                                <menuItem title="All Pass" state="on" id="mgY-TH-ASE"/>
+                                <menuItem title="Low Pass" tag="1" id="aHC-b8-APs"/>
+                                <menuItem title="High Pass" tag="2" id="SGp-eK-2dE"/>
+                                <menuItem title="Band Pass" tag="3" id="Xbb-bc-jec"/>
+                                <menuItem title="Notch " tag="4" id="eJ3-z4-esd"/>
+                                <menuItem title="Peaking EQ" tag="5" id="lCV-l7-9xP"/>
+                            </items>
+                        </menu>
+                    </popUpButtonCell>
+                    <connections>
+                        <action selector="filterTypeUpdated:" target="-2" id="cnU-b3-pEW"/>
+                    </connections>
+                </popUpButton>
             </subviews>
             <constraints>
                 <constraint firstItem="Y7U-2h-5jH" firstAttribute="top" secondItem="R36-UR-7aV" secondAttribute="top" constant="8" id="0n0-Zy-5Il"/>
+                <constraint firstItem="Lye-Jv-Qii" firstAttribute="top" secondItem="R36-UR-7aV" secondAttribute="top" constant="9" id="8cq-O7-Kf7"/>
                 <constraint firstItem="oPI-wC-N8q" firstAttribute="top" secondItem="Y7U-2h-5jH" secondAttribute="bottom" constant="8" id="Nqz-1C-y1O"/>
                 <constraint firstItem="Y7U-2h-5jH" firstAttribute="centerX" secondItem="R36-UR-7aV" secondAttribute="centerX" id="ONo-fd-S3h"/>
+                <constraint firstItem="Lye-Jv-Qii" firstAttribute="leading" secondItem="R36-UR-7aV" secondAttribute="leading" constant="20" symbolic="YES" id="Oj1-pX-MXF"/>
                 <constraint firstAttribute="bottom" secondItem="oPI-wC-N8q" secondAttribute="bottom" constant="8" id="bOT-6Z-Sfb"/>
                 <constraint firstAttribute="trailing" secondItem="oPI-wC-N8q" secondAttribute="trailing" constant="8" id="f78-xv-Qnp"/>
                 <constraint firstItem="oPI-wC-N8q" firstAttribute="leading" secondItem="R36-UR-7aV" secondAttribute="leading" constant="8" id="ncK-hk-5iB"/>

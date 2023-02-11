@@ -161,17 +161,17 @@
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="MainViewController" customModule="BiquadFilter" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="567" height="400"/>
+                        <rect key="frame" x="0.0" y="0.0" width="574" height="400"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <box borderType="line" title="Parameters" translatesAutoresizingMaskIntoConstraints="NO" id="rfi-rJ-PdE" userLabel="Parameters Box">
-                                <rect key="frame" x="33" y="316" width="499" height="64"/>
+                                <rect key="frame" x="33" y="316" width="508" height="64"/>
                                 <view key="contentView" id="b4b-Oa-AOn">
-                                    <rect key="frame" x="4" y="5" width="491" height="44"/>
+                                    <rect key="frame" x="4" y="5" width="500" height="44"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <gridView xPlacement="leading" yPlacement="bottom" rowAlignment="firstBaseline" rowSpacing="0.0" columnSpacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="IrQ-2v-htG">
-                                            <rect key="frame" x="0.0" y="0.0" width="491" height="42"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="500" height="42"/>
                                             <constraints>
                                                 <constraint firstItem="NqD-3f-NMs" firstAttribute="leading" secondItem="veU-X7-Bd9" secondAttribute="trailing" constant="5" id="AX8-ik-gDa"/>
                                                 <constraint firstItem="veU-X7-Bd9" firstAttribute="leading" secondItem="78S-15-HAR" secondAttribute="trailing" constant="5" id="HQh-VM-zQH"/>
@@ -187,7 +187,7 @@
                                                 <gridColumn xPlacement="center" width="60" id="1Si-uw-5pK"/>
                                                 <gridColumn width="25" id="2l8-mf-sVU"/>
                                                 <gridColumn id="xxt-gH-QbW"/>
-                                                <gridColumn width="120" id="y8E-HO-Rdk"/>
+                                                <gridColumn xPlacement="center" width="120" leadingPadding="10" id="y8E-HO-Rdk"/>
                                             </columns>
                                             <gridCells>
                                                 <gridCell row="OS7-93-Qj2" column="yN2-3K-2Qg" id="cZl-3J-2bO">
@@ -234,8 +234,8 @@
                                                 </gridCell>
                                                 <gridCell row="OS7-93-Qj2" column="y8E-HO-Rdk" id="Hxi-vg-Y2U">
                                                     <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NqD-3f-NMs">
-                                                        <rect key="frame" x="369" y="24" width="72" height="16"/>
-                                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Filter Type:" id="mJC-tk-Qi2">
+                                                        <rect key="frame" x="402" y="24" width="76" height="16"/>
+                                                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="Filter Type:" id="mJC-tk-Qi2">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -281,7 +281,7 @@
                                                         <constraints>
                                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="bX0-e5-rPW"/>
                                                         </constraints>
-                                                        <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="-20" maxValue="20" tickMarkPosition="above" sliderType="linear" id="UiK-7l-PXj"/>
+                                                        <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="0.10000000000000001" maxValue="25" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="UiK-7l-PXj"/>
                                                         <connections>
                                                             <action selector="resonanceSliderValueChanged:" target="XfG-lQ-9wD" id="LlT-VI-6f7"/>
                                                         </connections>
@@ -289,7 +289,7 @@
                                                 </gridCell>
                                                 <gridCell row="Vwg-JG-rtr" column="y8E-HO-Rdk" id="bJj-b9-I31">
                                                     <popUpButton key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="v2X-5h-7pZ">
-                                                        <rect key="frame" x="368" y="-4" width="109" height="25"/>
+                                                        <rect key="frame" x="386" y="-4" width="109" height="25"/>
                                                         <popUpButtonCell key="cell" type="push" title="All Pass" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="7MR-xB-7Mi" id="6JD-P2-EHj">
                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="menu"/>
@@ -306,6 +306,9 @@
                                                                 </items>
                                                             </menu>
                                                         </popUpButtonCell>
+                                                        <connections>
+                                                            <action selector="filterTypePopupValueChanged:" target="XfG-lQ-9wD" id="yaE-NP-HTp"/>
+                                                        </connections>
                                                     </popUpButton>
                                                 </gridCell>
                                             </gridCells>
@@ -322,7 +325,7 @@
                                 </constraints>
                             </box>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="AVM-k6-jTo" userLabel="Content View">
-                                <rect key="frame" x="20" y="8" width="525" height="292"/>
+                                <rect key="frame" x="20" y="8" width="534" height="292"/>
                             </customView>
                         </subviews>
                         <constraints>
@@ -339,13 +342,14 @@
                         <outlet property="containerView" destination="AVM-k6-jTo" id="0Du-8s-SA4"/>
                         <outlet property="cutoffSlider" destination="veU-X7-Bd9" id="5wz-pZ-NhO"/>
                         <outlet property="cutoffTextField" destination="R8U-qk-iuM" id="i9s-KD-4fg"/>
+                        <outlet property="filterTypePopup" destination="v2X-5h-7pZ" id="ZVX-Mh-vjc"/>
                         <outlet property="resonanceSlider" destination="MX2-fm-3rT" id="aWP-3P-qKq"/>
                         <outlet property="resonanceTextField" destination="25o-BP-DCr" id="dcx-hL-VLx"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="166" y="1235"/>
+            <point key="canvasLocation" x="-66" y="1336"/>
         </scene>
     </scenes>
 </document>

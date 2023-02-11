@@ -100,5 +100,9 @@ extension MainViewController: AUManagerDelegate {
         resonanceSlider.value = value
         resonanceTextField.text = String(format: "%.2f", value)
     }
+	
+	func filterTypeValueDidChange(_ value: Float) {
+		// FIXME implement
+	}
 }
 

@@ -20,6 +20,8 @@ class MainViewController: NSViewController {
 
     @IBOutlet var resonanceSlider: NSSlider!
     @IBOutlet var resonanceTextField: NSTextField!
+	
+	@IBOutlet weak var filterTypePopup: NSPopUpButton!
 
     @IBOutlet var containerView: NSView!
 
@@ -89,6 +91,13 @@ class MainViewController: NSViewController {
         audioUnitManager.resonanceValue = sender.floatValue
     }
 
+	/// The resonance value changes the handler.
+	@IBAction func filterTypePopupValueChanged(_ sender: NSPopUpButton) {
+		guard let item = sender.selectedItem else { return }
+		
+		audioUnitManager.filterTypeValue = Float(item.tag)
+	}
+
     // MARK: Private
 
     private func logValueForNumber(_ number: Float) -> Float {
@@ -130,5 +139,10 @@ extension MainViewController: AUManagerDelegate {
         resonanceSlider.floatValue = value
         resonanceTextField.text = String(format: "%.2f", value)
     }
+	
+	func filterTypeValueDidChange(_ value: Float) {
+		let intVal = Int(value)
+		filterTypePopup.selectItem(withTag: intVal)
+	}
 }
 

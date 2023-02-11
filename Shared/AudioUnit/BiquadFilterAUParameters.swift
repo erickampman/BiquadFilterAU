@@ -7,11 +7,20 @@ The object that manages the filter's cutoff and resonance parameters.
 
 import Foundation
 
+public let CompactFilterTypes: [String] = [
+	"PassThrough",
+	"LowPass",
+	"HighPass",
+	"BandPass",
+	"Notch",
+	"PeakingEQ",
+]
+
 /// Manages the BiquadFilter object's cutoff and resonance parameters.
 class BiquadFilterAUParameters {
 
     private enum BiquadFilterParam: AUParameterAddress {
-        case cutoff, resonance
+        case cutoff, resonance, filterType
     }
 
     /// The parameter to control the cutoff frequency (12 Hz - 20 kHz).
@@ -41,8 +50,8 @@ class BiquadFilterAUParameters {
             AUParameterTree.createParameter(withIdentifier: "resonance",
                                             name: "Resonance",
                                             address: BiquadFilterParam.resonance.rawValue,
-                                            min: -20.0,
-                                            max: 20.0,
+											min: 0.1,
+                                            max: 25,
                                             unit: .decibels,
                                             unitName: nil,
                                             flags: [.flag_IsReadable,
@@ -55,6 +64,25 @@ class BiquadFilterAUParameters {
 
         return parameter
     }()
+		
+	var filterTypeParam: AUParameter = {
+		let parameter =
+	  AUParameterTree.createParameter(withIdentifier: "filterType",
+									  name: "FilterType",
+									  address: BiquadFilterParam.filterType.rawValue,
+									  min: 0,
+									  max: 5,
+									  unit: AudioUnitParameterUnit.indexed,
+									  unitName: nil,
+									  flags: [.flag_IsReadable,
+											  .flag_IsWritable],
+									  valueStrings: CompactFilterTypes,
+									  dependentParameters: nil)
+  // Set the default value.
+		parameter.value = Float(PARAM_ITEM_FILTER_TYPE.LOWPASS.rawValue)
+
+  return parameter
+}()
 
     let parameterTree: AUParameterTree
 
@@ -62,7 +90,8 @@ class BiquadFilterAUParameters {
 
         // Create the audio unit's tree of parameters.
         parameterTree = AUParameterTree.createTree(withChildren: [cutoffParam,
-                                                                  resonanceParam])
+                                                                  resonanceParam,
+																  filterTypeParam])
 
         // A closure for observing all externally generated parameter value changes.
         parameterTree.implementorValueObserver = { param, value in

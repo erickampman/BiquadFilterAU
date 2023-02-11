@@ -24,6 +24,7 @@ public struct Preset {
 public protocol AUManagerDelegate: AnyObject {
     func cutoffValueDidChange(_ value: Float)
     func resonanceValueDidChange(_ value: Float)
+	func filterTypeValueDidChange(_ value: Float)
 }
 
 // The controller object for managing the interaction with the audio unit and its user interface.
@@ -52,6 +53,13 @@ public class AudioUnitManager {
             resonanceParameter.value = resonanceValue
         }
     }
+
+	// set by popup, but AUParameters are always floats!
+	public var filterTypeValue: Float = 0.0 {
+		didSet {
+			filterTypeParameter.value = filterTypeValue
+		}
+	}
 
     // Gets the audio unit's defined presets.
     public var presets: [Preset] {
@@ -82,6 +90,9 @@ public class AudioUnitManager {
 
     // The audio unit's filter resonance parameter object.
     private var resonanceParameter: AUParameter!
+
+	// The audio unit's filter type parameter object.
+	private var filterTypeParameter: AUParameter!
 
     // A token for registering to observe parameter value changes.
     private var parameterObserverToken: AUParameterObserverToken!
@@ -163,7 +174,8 @@ public class AudioUnitManager {
         }
 
         cutoffParameter = parameterTree.value(forKey: "cutoff") as? AUParameter
-        resonanceParameter = parameterTree.value(forKey: "resonance") as? AUParameter
+		resonanceParameter = parameterTree.value(forKey: "resonance") as? AUParameter
+		filterTypeParameter = parameterTree.value(forKey: "filterType") as? AUParameter
 
         parameterObserverToken = parameterTree.token(byAddingParameterObserver: { [weak self] address, _ in
             guard let self = self else { return }
@@ -191,6 +203,10 @@ public class AudioUnitManager {
         guard let param = resonanceParameter else { return }
         delegate?.resonanceValueDidChange(param.value)
     }
+	func updateFilterType() {
+		guard let param = filterTypeParameter else { return }
+		delegate?.filterTypeValueDidChange(param.value)
+	}
 
     @discardableResult
     public func togglePlayback() -> Bool {

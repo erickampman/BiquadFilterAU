@@ -9,6 +9,8 @@ A DSPKernel subclass that implements the real-time signal processing portion of 
 
 #import "DSPKernel.hpp"
 #import "ParameterRamper.hpp"
+#import "BiquadFilterData.h"
+#import "BiquadCoefficientCalculator.hpp"
 #import <vector>
 
 static inline float convertBadValuesToZero(float x) {
@@ -31,7 +33,8 @@ static inline float convertBadValuesToZero(float x) {
 
 enum {
     FilterParamCutoff = 0,
-    FilterParamResonance = 1
+	FilterParamResonance = 1,
+	FilterParamType = 2,
 };
 
 static inline double squared(double x) {
@@ -73,36 +76,118 @@ public:
         }
     };
 
-    struct BiquadCoefficients {
+    struct KernelBiquadCoefficients {
         float a1 = 0.0;
         float a2 = 0.0;
         float b0 = 0.0;
         float b1 = 0.0;
         float b2 = 0.0;
+//		PARAM_ITEM_FILTER_TYPE filterType = PARAM_ITEM_FILTER_TYPE_PASSTHROUGH;
+		
+		BiquadCoefficients biquadCoefficients() {
+			BiquadCoefficients ret{ b0, b1, b2, a1, a2};
+			return ret;
+		}
+//
+//        void calculateLopassParams(double frequency, double resonance) {
+//            /*
+//             It's possible to replace the transcendental function calls here with
+//             interpolated table lookups or other approximations.
+//             */
+//
+//            // Convert from decibels to linear.
+//            double r = pow(10.0, 0.05 * -resonance);
+//
+//            double k  = 0.5 * r * sin(M_PI * frequency);
+//            double c1 = (1.0 - k) / (1.0 + k);
+//            double c2 = (1.0 + c1) * cos(M_PI * frequency);
+//            double c3 = (1.0 + c1 - c2) * 0.25;
+//
+//            b0 = float(c3);
+//            b1 = float(2.0 * c3);
+//            b2 = float(c3);
+//            a1 = float(-c2);
+//            a2 = float(c1);
+//        }
 
-        void calculateLopassParams(double frequency, double resonance) {
-            /*
-             It's possible to replace the transcendental function calls here with
-             interpolated table lookups or other approximations.
-             */
-            
-            // Convert from decibels to linear.
-            double r = pow(10.0, 0.05 * -resonance);
+		void calculateCoefficients(double frequency, double resonance,
+								   PARAM_ITEM_FILTER_TYPE filterType,
+								   double sampleRate)
+		{
+			
+			float omega = 2.0 * M_PI * frequency / float(sampleRate);
+			float sinOmega = sin(omega);
+			float alpha = sinOmega / (2 * resonance);
+			float cosOmega = cos(omega);
+			
+			float a0;
 
-            double k  = 0.5 * r * sin(M_PI * frequency);
-            double c1 = (1.0 - k) / (1.0 + k);
-            double c2 = (1.0 + c1) * cos(M_PI * frequency);
-            double c3 = (1.0 + c1 - c2) * 0.25;
-
-            b0 = float(c3);
-            b1 = float(2.0 * c3);
-            b2 = float(c3);
-            a1 = float(-c2);
-            a2 = float(c1);
-        }
+			switch (filterType) {
+			case PARAM_ITEM_FILTER_TYPE_PASSTHROUGH:
+//				b0 = passthroughCoefficients.b0;  <-- example
+				b0 = 1.0;
+				b1 = 0.0;
+				b2 = 0.0;
+				a0 = 1.0;
+				a1 = 0.0;
+				a2 = 0.0;
+				break;
+			case PARAM_ITEM_FILTER_TYPE_LOWPASS:
+				b0 = (1.0 - cosOmega) / 2.0;
+				b1 = 1.0 - cosOmega;
+				b2 = (1.0 - cosOmega) / 2.0;
+				a0 = 1 + alpha;
+				a1 = -2.0 * cosOmega;
+				a2 = 1.0 - alpha;
+				break;
+			case PARAM_ITEM_FILTER_TYPE_HIGHPASS:
+				b0 = (1.0 + cosOmega) / 2.0;
+				b1 = -(1.0 + cosOmega);
+				b2 = (1.0 + cosOmega) / 2.0;
+				a0 = 1.0 + alpha;
+				a1 = -2.0 * cosOmega;
+				a2 = 1 - alpha;
+				break;
+			case PARAM_ITEM_FILTER_TYPE_BANDPASS:
+				b0 = alpha;
+				b1 = 0.0;
+				b2 = -alpha;
+				a0 = 1.0 + alpha;
+				a1 = -2.0 * cosOmega;
+				a2 = 1.0 - alpha;
+				break;
+			case PARAM_ITEM_FILTER_TYPE_NOTCH:
+				b0 = 1.0;
+				b1 = -2.0 * cosOmega;
+				b2 = 1.0;
+				a0 = 1.0 + alpha;
+				a1 = -2.0 * cosOmega;
+				a2 = 1.0 - alpha;
+				break;
+			case PARAM_ITEM_FILTER_TYPE_PEAKINGEQ:
+				{
+					// Curve that sort of fits, not great.
+					// Want to control all filters with the q/rez param.
+					float dbGain = 18.1 * log(resonance) - 8.33;
+					float A = pow(10.0, dbGain / 40.0);
+					b0 = 1.0 + alpha * A;
+					b1 = -2.0 * cosOmega;
+					b2 = 1.0 - alpha * A;
+					a0 = 1.0 + alpha / A;
+					a1 = -2.0 * cosOmega;
+					a2 = 1.0 - alpha / A;
+				}
+				break;
+			}
+			b0 /= a0;
+			b1 /= a0;
+			b2 /= a0;
+			a1 /= a0;
+			a2 /= a0;
+		}
 
         // Arguments in hertz.
-        double magnitudeForFrequency( double inFreq) {
+        double magnitudeForFrequency(double inFreq) {
             // Cast to double.
             double _b0 = double(b0);
             double _b1 = double(b1);
@@ -135,7 +220,8 @@ public:
 
     // MARK: Member Functions
 
-    FilterDSPKernel() : cutoffRamper(400.0 / 44100.0), resonanceRamper(20.0)  {}
+	//: cutoffRamper(400.0 / 44100.0), resonanceRamper(20.0)
+	FilterDSPKernel() {}
 
     void init(int channelCount, double inSampleRate) {
         channelStates.resize(channelCount);
@@ -144,14 +230,14 @@ public:
         nyquist = 0.5 * sampleRate;
         inverseNyquist = 1.0 / nyquist;
         dezipperRampDuration = (AUAudioFrameCount)floor(0.02 * sampleRate);
-        cutoffRamper.init();
-        resonanceRamper.init();
+//        cutoffRamper.init();
+//        resonanceRamper.init();
 
     }
 
     void reset() {
-        cutoffRamper.reset();
-        resonanceRamper.reset();
+//        cutoffRamper.reset();
+//        resonanceRamper.reset();
         for (FilterState& state : channelStates) {
             state.clear();
         }
@@ -169,12 +255,24 @@ public:
         switch (address) {
             case FilterParamCutoff:
                 //cutoffRamper.setUIValue(clamp(value * inverseNyquist, 0.0f, 0.99f));
-                cutoffRamper.setUIValue(clamp(value * inverseNyquist, 0.0005444f, 0.9070295f));
+//                cutoffRamper.setUIValue(clamp(value * inverseNyquist, 0.0005444f, 0.9070295f));
+//		min: ,
+//		max: 20_000.0,
+			cutoff = clamp(value, 0.0f, 20000.0f);
+
                 break;
                 
             case FilterParamResonance:
-                resonanceRamper.setUIValue(clamp(value, -20.0f, 20.0f));
+			resonance = clamp(value, 0.1f, 25.0f);
+//                resonanceRamper.setUIValue(clamp(value, 12.0f, 20.0f));
+//		min: -20.0,
+//		max: 20.0,
+
                 break;
+			case FilterParamType:
+				filterType = NSUInteger(value);
+				break;
+				
         }
     }
 
@@ -183,11 +281,16 @@ public:
             case FilterParamCutoff:
                 // Return the goal. It isn't thread safe to return the ramping value.
                 //return (cutoffRamper.getUIValue() * nyquist);
-                return roundf((cutoffRamper.getUIValue() * nyquist) * 100) / 100;
+				return cutoff;
+//                return roundf((cutoffRamper.getUIValue() * nyquist) * 100) / 100;
 
             case FilterParamResonance:
-                return resonanceRamper.getUIValue();
+				return resonance;
+//                return resonanceRamper.getUIValue();
 
+			case FilterParamType:
+				return filterType;
+			
             default: return 12.0f * inverseNyquist;
         }
     }
@@ -195,11 +298,11 @@ public:
     void startRamp(AUParameterAddress address, AUValue value, AUAudioFrameCount duration) override {
         switch (address) {
             case FilterParamCutoff:
-                cutoffRamper.startRamp(clamp(value * inverseNyquist, 12.0f * inverseNyquist, 0.99f), duration);
+//                cutoffRamper.startRamp(clamp(value * inverseNyquist, 12.0f * inverseNyquist, 0.99f), duration);
                 break;
 
             case FilterParamResonance:
-                resonanceRamper.startRamp(clamp(value, -20.0f, 20.0f), duration);
+//                resonanceRamper.startRamp(clamp(value, -20.0f, 20.0f), duration);
                 break;
         }
     }
@@ -229,8 +332,8 @@ public:
 
         int channelCount = int(channelStates.size());
 
-        cutoffRamper.dezipperCheck(dezipperRampDuration);
-        resonanceRamper.dezipperCheck(dezipperRampDuration);
+//        cutoffRamper.dezipperCheck(dezipperRampDuration);
+//        resonanceRamper.dezipperCheck(dezipperRampDuration);
 
         // For each sample.
         for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
@@ -238,9 +341,12 @@ public:
              The filter coefficients update every sample. This is very
              expensive. You probably want to do things differently.
              */
-            double cutoff    = double(cutoffRamper.getAndStep());
-            double resonance = double(resonanceRamper.getAndStep());
-            coeffs.calculateLopassParams(cutoff, resonance);
+			double frequency    = this->cutoff;		// fixme ramping need a lot of work
+			double resonance    = this->resonance;
+			PARAM_ITEM_FILTER_TYPE lclFilterType = PARAM_ITEM_FILTER_TYPE(filterType);
+//           double frequency    = double(cutoffRamper.getAndStep());
+//            double resonance = double(resonanceRamper.getAndStep());
+			coeffs.calculateCoefficients(frequency, resonance, lclFilterType, sampleRate);
 
             int frameOffset = int(frameIndex + bufferOffset);
 
@@ -265,12 +371,29 @@ public:
             channelStates[channel].convertBadStateValuesToZero();
         }
     }
+	
+	BiquadCoefficients &calculateCoefficients(float frequency, float resonance,
+											  PARAM_ITEM_FILTER_TYPE filterType)
+	{
+		// FIXME move this -- calc for  conversion of q to dbGain
+		// -50 <= dbGain <= 50
+		// .10 <= q      <= 25
+		// meh fit with y = 18.1 * ln(x) - 8.33
+		
+		BiquadCoefficients bc = coefficients.biquadCoefficients();
+
+		return bqcCalculator.calculate(bc, frequency, resonance, filterType, sampleRate);
+	}
+	
+	double magnitudeForFrequency(double inFreq) {
+		return coefficients.magnitudeForFrequency(inFreq);
+	}
 
     // MARK: Member Variables
 
 private:
     std::vector<FilterState> channelStates;
-    BiquadCoefficients coeffs;
+    KernelBiquadCoefficients coeffs;
 
     float sampleRate = 44100.0;
     float nyquist = 0.5 * sampleRate;
@@ -279,14 +402,21 @@ private:
 
     AudioBufferList* inBufferListPtr = nullptr;
     AudioBufferList* outBufferListPtr = nullptr;
+	
+	BiquadCoefficientCalculator bqcCalculator;
+	KernelBiquadCoefficients coefficients = { 0 };
 
     bool bypassed = false;
 
 public:
 
     // Parameters.
-    ParameterRamper cutoffRamper;
-    ParameterRamper resonanceRamper;
+//    ParameterRamper cutoffRamper;
+//    ParameterRamper resonanceRamper;
+	AUValue cutoff;
+	AUValue resonance;
+	
+	NSUInteger filterType;
 };
 
 #endif /* FilterDSPKernel_hpp */

@@ -15,7 +15,8 @@ public class BiquadFilterViewController: AUViewController {
     private var viewConfig: AUAudioUnitViewConfiguration!
 
     private var cutoffParameter: AUParameter!
-    private var resonanceParameter: AUParameter!
+	private var resonanceParameter: AUParameter!
+	private var filterTypeParameter: AUParameter!
     private var parameterObserverToken: AUParameterObserverToken?
 
     @IBOutlet weak var filterView: FilterView!
@@ -23,6 +24,8 @@ public class BiquadFilterViewController: AUViewController {
     @IBOutlet weak var frequencyTextField: TextField!
     @IBOutlet weak var resonanceTextField: TextField!
     
+	@IBOutlet weak var filterTypePopup: NSPopUpButton!
+	
     var observer: NSKeyValueObservation?
 
     var needsConnection = true
@@ -106,18 +109,21 @@ public class BiquadFilterViewController: AUViewController {
         connectViewToAU()
     }
 
-    private func connectViewToAU() {
-        guard needsConnection, let paramTree = audioUnit?.parameterTree else { return }
-
-        // Find the cutoff and resonance parameters in the parameter tree.
-        guard let cutoff = paramTree.value(forKey: "cutoff") as? AUParameter,
-            let resonance = paramTree.value(forKey: "resonance") as? AUParameter else {
-                fatalError("Required AU parameters not found.")
+	private func connectViewToAU() {
+		guard needsConnection, let paramTree = audioUnit?.parameterTree else { return }
+		
+		// Find the cutoff and resonance parameters in the parameter tree.
+		guard let cutoff = paramTree.value(forKey: "cutoff") as? AUParameter,
+			  let resonance = paramTree.value(forKey: "resonance") as? AUParameter,
+				let filterType = paramTree.value(forKey: "filterType") as? AUParameter
+		else {
+			fatalError("Required AU parameters not found.")
         }
 
         // Set the instance variables.
         cutoffParameter = cutoff
         resonanceParameter = resonance
+		filterTypeParameter = filterType
 
         // Observe major state changes like a user selecting a user preset.
         observer = audioUnit?.observe(\.allParameterValues) { object, change in
@@ -133,7 +139,7 @@ public class BiquadFilterViewController: AUViewController {
 
                 // An arbitrary queue is calling this closure. Ensure
                 // all UI updates dispatch back to the main thread.
-                if [cutoff.address, resonance.address].contains(address) {
+				if [cutoff.address, resonance.address,filterType.address].contains(address) {
                     DispatchQueue.main.async {
                         self.updateUI()
                     }
@@ -151,12 +157,23 @@ public class BiquadFilterViewController: AUViewController {
         // Set the latest values on the graph view.
         filterView.frequency = cutoffParameter.value
         filterView.resonance = resonanceParameter.value
+		
+		// filterType here FIXME
 
         // Set the latest text field values.
         frequencyTextField.text = cutoffParameter.string(fromValue: nil)
         resonanceTextField.text = resonanceParameter.string(fromValue: nil)
 
         updateFilterViewFrequencyAndMagnitudes()
+		
+		let intVal = Int(filterTypeParameter.value)
+		filterTypePopup.selectItem(withTag: intVal)
+
+
+//		guard let item = sender.selectedItem else { return }
+//		
+//		audioUnitManager.filterTypeValue = Float(item.tag)
+
     }
 
     @IBAction func frequencyUpdated(_ sender: TextField) {
@@ -172,6 +189,14 @@ public class BiquadFilterViewController: AUViewController {
         parameter.value = value
         textField.text = parameter.string(fromValue: nil)
     }
+	
+	@IBAction func filterTypeUpdated(_ sender: NSPopUpButton) {
+		
+		guard let value = sender.selectedItem?.tag else {
+			return
+		}
+		filterTypeParameter.value = AUValue(value)
+	}
 
     // MARK: View Configuration Selection
 

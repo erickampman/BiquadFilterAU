@@ -10,11 +10,14 @@ The adapter object that provides a Swift-accessible interface to the filter's un
 #import "FilterDSPKernel.hpp"
 #import "BufferedAudioBus.hpp"
 #import "FilterDSPKernelAdapter.h"
+#import <BiquadFilterFramework/BiquadFilterFramework-Swift.h>
+
 
 @implementation FilterDSPKernelAdapter {
     // C++ members need to be ivars; they would be copied on access if they were properties.
     FilterDSPKernel  _kernel;
     BufferedInputBus _inputBus;
+	BiquadCoefficientCalculator *_bqcCalculator;
 }
 
 - (instancetype)init {
@@ -25,12 +28,19 @@ The adapter object that provides a Swift-accessible interface to the filter's un
         _kernel.init(format.channelCount, format.sampleRate);
         _kernel.setParameter(FilterParamCutoff, 0);
         _kernel.setParameter(FilterParamResonance, 0);
+		_kernel.setParameter(FilterParamType, 0);
 
         // Create the input and output busses.
         _inputBus.init(format, 8);
         _outputBus = [[AUAudioUnitBus alloc] initWithFormat:format error:nil];
+		
+		_bqcCalculator = new BiquadCoefficientCalculator();
     }
     return self;
+}
+
+- (void)dealloc {
+	delete _bqcCalculator;
 }
 
 - (AUAudioUnitBus *)inputBus {
@@ -38,20 +48,34 @@ The adapter object that provides a Swift-accessible interface to the filter's un
 }
 
 - (NSArray<NSNumber *> *)magnitudesForFrequencies:(NSArray<NSNumber *> *)frequencies {
-    FilterDSPKernel::BiquadCoefficients coefficients;
+	BiquadCoefficients coefficients;
+	BiquadInputs inputs;
+	inputs.frequency = _kernel.cutoff;
+	inputs.q = _kernel.resonance;
+	inputs.filterType = PARAM_ITEM_FILTER_TYPE(_kernel.getParameter(FilterParamType));
 
-    double inverseNyquist = 2.0 / self.outputBus.format.sampleRate;
+	_kernel.calculateCoefficients(_kernel.cutoff,
+								  _kernel.resonance,
+								  PARAM_ITEM_FILTER_TYPE(_kernel.getParameter(FilterParamType))
+	);
+	
+	double inverseNyquist = 2.0 / self.outputBus.format.sampleRate;
+#if 0
 
     coefficients.calculateLopassParams(_kernel.cutoffRamper.getUIValue(), _kernel.resonanceRamper.getUIValue());
-
+#endif
+	
     NSMutableArray<NSNumber *> *magnitudes = [NSMutableArray arrayWithCapacity:frequencies.count];
+
+//	MagnitudeResponseCalculator *mrc = [[MagnitudeResponseCalculator alloc] initWithSampleCount:256];
 
     for (NSNumber *number in frequencies) {
         double frequency = [number doubleValue];
-        double magnitude = coefficients.magnitudeForFrequency(frequency * inverseNyquist);
+        double magnitude = _kernel.magnitudeForFrequency(frequency * inverseNyquist);
 
         [magnitudes addObject:@(magnitude)];
     }
+
 
     return [NSArray arrayWithArray:magnitudes];
 }

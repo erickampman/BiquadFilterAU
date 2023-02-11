@@ -68,6 +68,14 @@
 		C4F07736223ACB91008FFF06 /* Synth.aif in Resources */ = {isa = PBXBuildFile; fileRef = C4F07734223ACB91008FFF06 /* Synth.aif */; };
 		E43C89AA297DF84F00FA6205 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43C89A9297DF84F00FA6205 /* StringExtension.swift */; };
 		E43C89AB297DF84F00FA6205 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43C89A9297DF84F00FA6205 /* StringExtension.swift */; };
+		E43C89E52986E2A900FA6205 /* BiquadCoefficientCalculator.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E43C89E42986E2A900FA6205 /* BiquadCoefficientCalculator.hpp */; };
+		E43C89E62986E2A900FA6205 /* BiquadCoefficientCalculator.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E43C89E42986E2A900FA6205 /* BiquadCoefficientCalculator.hpp */; };
+		E43C89E829871A4D00FA6205 /* BiquadFilterData.h in Headers */ = {isa = PBXBuildFile; fileRef = E43C89E729871A4D00FA6205 /* BiquadFilterData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E43C89E929871A4D00FA6205 /* BiquadFilterData.h in Headers */ = {isa = PBXBuildFile; fileRef = E43C89E729871A4D00FA6205 /* BiquadFilterData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E43C89EB298962ED00FA6205 /* MagnitudeResponseCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43C89EA298962ED00FA6205 /* MagnitudeResponseCalculator.swift */; };
+		E43C89EC298962ED00FA6205 /* MagnitudeResponseCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43C89EA298962ED00FA6205 /* MagnitudeResponseCalculator.swift */; };
+		E43C8A082997F90300FA6205 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E43C8A072997F90300FA6205 /* README.md */; };
+		E43C8A092997F90300FA6205 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E43C8A072997F90300FA6205 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -150,7 +158,7 @@
 
 /* Begin PBXFileReference section */
 		4311B2DA5B4A02595B1F8E6D /* SampleCode.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = SampleCode.xcconfig; path = Configuration/SampleCode.xcconfig; sourceTree = "<group>"; };
-		7E56CF207E56CEE000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		7E56CF207E56CEE000000001 /* Apple-README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Apple-README.md"; sourceTree = "<group>"; };
 		C4201A2822403120006E4333 /* BiquadFilterViewControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BiquadFilterViewControllerExtension.swift; sourceTree = "<group>"; };
 		C433F56022404C7C00F1B750 /* BiquadFilterDemoViewControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BiquadFilterDemoViewControllerExtension.swift; sourceTree = "<group>"; };
 		C437FE3A222367A6008D6C09 /* BiquadFilter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BiquadFilter.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -206,7 +214,11 @@
 		C4F07734223ACB91008FFF06 /* Synth.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = Synth.aif; sourceTree = "<group>"; };
 		C6DC5208287CAC940AAA55F3 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		E43C89A9297DF84F00FA6205 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
-		E43C89AC297E016100FA6205 /* BiquadCoefficientCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BiquadCoefficientCalculator.swift; sourceTree = "<group>"; };
+		E43C89E42986E2A900FA6205 /* BiquadCoefficientCalculator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BiquadCoefficientCalculator.hpp; sourceTree = "<group>"; };
+		E43C89E729871A4D00FA6205 /* BiquadFilterData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BiquadFilterData.h; sourceTree = "<group>"; };
+		E43C89EA298962ED00FA6205 /* MagnitudeResponseCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MagnitudeResponseCalculator.swift; sourceTree = "<group>"; };
+		E43C89ED298EDAF400FA6205 /* MagnitudeResponseCalculator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MagnitudeResponseCalculator.hpp; sourceTree = "<group>"; };
+		E43C8A072997F90300FA6205 /* README.md */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -263,7 +275,8 @@
 		C437FE2F2223672C008D6C09 = {
 			isa = PBXGroup;
 			children = (
-				7E56CF207E56CEE000000001 /* README.md */,
+				E43C8A072997F90300FA6205 /* README.md */,
+				7E56CF207E56CEE000000001 /* Apple-README.md */,
 				C4BEE79622236A29001E6B6D /* iOS */,
 				C4BEE7B622236A58001E6B6D /* macOS */,
 				C4BEE7D522236E99001E6B6D /* Shared */,
@@ -399,7 +412,7 @@
 			children = (
 				C4F004A52239B2070014E248 /* BiquadFilterAU.swift */,
 				C4F0772D223AACBB008FFF06 /* BiquadFilterAUParameters.swift */,
-				E43C89AC297E016100FA6205 /* BiquadCoefficientCalculator.swift */,
+				E43C89EA298962ED00FA6205 /* MagnitudeResponseCalculator.swift */,
 				C4BEE7E422236E99001E6B6D /* Support */,
 			);
 			path = AudioUnit;
@@ -415,6 +428,9 @@
 				C4F0049F2239B1E10014E248 /* FilterDSPKernelAdapter.h */,
 				C4F004A02239B1E10014E248 /* FilterDSPKernelAdapter.mm */,
 				C4BEE7E522236E99001E6B6D /* ParameterRamper.hpp */,
+				E43C89E42986E2A900FA6205 /* BiquadCoefficientCalculator.hpp */,
+				E43C89ED298EDAF400FA6205 /* MagnitudeResponseCalculator.hpp */,
+				E43C89E729871A4D00FA6205 /* BiquadFilterData.h */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -485,9 +501,11 @@
 			files = (
 				C4F004A12239B1E10014E248 /* FilterDSPKernelAdapter.h in Headers */,
 				C4BEE8172223736F001E6B6D /* BiquadFilterFramework.h in Headers */,
+				E43C89E52986E2A900FA6205 /* BiquadCoefficientCalculator.hpp in Headers */,
 				C4BEE7EF22236F24001E6B6D /* ParameterRamper.hpp in Headers */,
 				C4BEE7F122236F24001E6B6D /* BufferedAudioBus.hpp in Headers */,
 				C4BEE7EE22236F24001E6B6D /* FilterDSPKernel.hpp in Headers */,
+				E43C89E829871A4D00FA6205 /* BiquadFilterData.h in Headers */,
 				C4BEE7F022236F24001E6B6D /* DSPKernel.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -498,9 +516,11 @@
 			files = (
 				C4F004A22239B1E10014E248 /* FilterDSPKernelAdapter.h in Headers */,
 				C496341422238CFA001D1F5B /* BiquadFilterFramework.h in Headers */,
+				E43C89E62986E2A900FA6205 /* BiquadCoefficientCalculator.hpp in Headers */,
 				C4BEE7F322236F27001E6B6D /* ParameterRamper.hpp in Headers */,
 				C4BEE7F522236F27001E6B6D /* BufferedAudioBus.hpp in Headers */,
 				C4BEE7F222236F27001E6B6D /* FilterDSPKernel.hpp in Headers */,
+				E43C89E929871A4D00FA6205 /* BiquadFilterData.h in Headers */,
 				C4BEE7F422236F27001E6B6D /* DSPKernel.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -708,6 +728,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E43C8A082997F90300FA6205 /* README.md in Resources */,
 				C4F07735223ACB91008FFF06 /* Synth.aif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -733,6 +754,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E43C8A092997F90300FA6205 /* README.md in Resources */,
 				C46B8B8122418B6000E00B1E /* BiquadFilterViewController.xib in Resources */,
 				C4F07736223ACB91008FFF06 /* Synth.aif in Resources */,
 			);
@@ -767,6 +789,7 @@
 				C4F07731223AC4F5008FFF06 /* BiquadFilterViewController.swift in Sources */,
 				C4F004A62239B2070014E248 /* BiquadFilterAU.swift in Sources */,
 				C4BEE7F822236F44001E6B6D /* AudioUnitManager.swift in Sources */,
+				E43C89EB298962ED00FA6205 /* MagnitudeResponseCalculator.swift in Sources */,
 				C4A3D65B223FF12A002784D4 /* SimplePlayEngine.swift in Sources */,
 				C4BEE80322236F6F001E6B6D /* FilterView.swift in Sources */,
 				C4BEE80422236F6F001E6B6D /* TypeAliases.swift in Sources */,
@@ -808,6 +831,7 @@
 				E43C89AB297DF84F00FA6205 /* StringExtension.swift in Sources */,
 				C4BEE80022236F6E001E6B6D /* TypeAliases.swift in Sources */,
 				C4F004A72239B2070014E248 /* BiquadFilterAU.swift in Sources */,
+				E43C89EC298962ED00FA6205 /* MagnitudeResponseCalculator.swift in Sources */,
 				C4201A2922403120006E4333 /* BiquadFilterViewControllerExtension.swift in Sources */,
 				C4A3D65C223FF12A002784D4 /* SimplePlayEngine.swift in Sources */,
 				C4F004A42239B1E10014E248 /* FilterDSPKernelAdapter.mm in Sources */,
