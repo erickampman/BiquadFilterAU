@@ -21,7 +21,7 @@ fileprivate extension AUAudioUnitPreset {
 public class BiquadFilterAU: AUAudioUnit {
 
     private let parameters: BiquadFilterAUParameters
-    private let kernelAdapter: FilterDSPKernelAdapter
+	private let kernelAdapter: FilterDSPKernelAdapter
 
     lazy private var inputBusArray: AUAudioUnitBusArray = {
         AUAudioUnitBusArray(audioUnit: self,
@@ -113,7 +113,7 @@ public class BiquadFilterAU: AUAudioUnit {
         
         // Create the parameters object to control the cutoff frequency and resonance.
         parameters = BiquadFilterAUParameters(kernelAdapter: kernelAdapter)
-
+		
         // Create the super class.
         try super.init(componentDescription: componentDescription, options: options)
 
@@ -145,6 +145,11 @@ public class BiquadFilterAU: AUAudioUnit {
         return kernelAdapter.magnitudes(forFrequencies: frequencies as [NSNumber]).map { $0.doubleValue }
     }
 
+	// dB = 20 * log10(amplitude)
+	func magnitudes() -> [Double] {
+		return kernelAdapter.magnitudes().map { 20.0 * log2($0.doubleValue)/log2(10.0) }
+	}
+
     public override var maximumFramesToRender: AUAudioFrameCount {
         get {
             return kernelAdapter.maximumFramesToRender
@@ -155,7 +160,17 @@ public class BiquadFilterAU: AUAudioUnit {
             }
         }
     }
-
+	
+	public func ramp() -> [NSNumber] {
+		return kernelAdapter.ramp()
+	}
+	
+	public func coefficients() -> BiquadCoefficientsPOD
+	{
+		let coeffs = kernelAdapter.kernelCoefficients()
+		return coeffs
+	}
+	
     public override func allocateRenderResources() throws {
         if kernelAdapter.outputBus.format.channelCount != kernelAdapter.inputBus.format.channelCount {
             throw NSError(domain: NSOSStatusErrorDomain, code: Int(kAudioUnitErr_FailedInitialization), userInfo: nil)
@@ -163,6 +178,8 @@ public class BiquadFilterAU: AUAudioUnit {
         try super.allocateRenderResources()
         kernelAdapter.allocateRenderResources()
     }
+	
+	
 
     public override func deallocateRenderResources() {
         super.deallocateRenderResources()

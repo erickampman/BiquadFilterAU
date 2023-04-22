@@ -11,9 +11,9 @@
                 <outlet property="compactView" destination="usM-Ct-ETz" id="6tA-ZU-CPN"/>
                 <outlet property="expandedView" destination="R36-UR-7aV" id="2Ns-GU-3Ee"/>
                 <outlet property="filterTypePopup" destination="Lye-Jv-Qii" id="zhc-Nt-RJ5"/>
-                <outlet property="filterView" destination="oPI-wC-N8q" id="PWT-IO-Fp1"/>
                 <outlet property="frequencyTextField" destination="gNr-9C-Jcl" id="I5Y-My-cGT"/>
                 <outlet property="resonanceTextField" destination="mNt-J3-k64" id="hem-e4-IoW"/>
+                <outlet property="responseView" destination="oPI-wC-N8q" id="iKL-jC-k7c"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
             </connections>
         </customObject>
@@ -24,54 +24,175 @@
         </customView>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R36-UR-7aV" userLabel="Expanded View">
-            <rect key="frame" x="0.0" y="0.0" width="800" height="500"/>
+            <rect key="frame" x="0.0" y="0.0" width="1108" height="500"/>
             <subviews>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Y7U-2h-5jH">
-                    <rect key="frame" x="344" y="471" width="113" height="21"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Biquad Filter" id="a7d-X2-dOB">
-                        <font key="font" metaFont="systemBold" size="18"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oPI-wC-N8q" customClass="FilterView" customModule="BiquadFilterFramework">
-                    <rect key="frame" x="8" y="8" width="784" height="455"/>
+                <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="12" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fDU-cO-Utv">
+                    <rect key="frame" x="8" y="471" width="1092" height="21"/>
+                    <subviews>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Y7U-2h-5jH">
+                            <rect key="frame" x="-2" y="0.0" width="113" height="21"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="109" id="LIy-5T-Iwl"/>
+                            </constraints>
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Biquad Filter" id="a7d-X2-dOB">
+                                <font key="font" metaFont="systemBold" size="18"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="Pqg-Hk-vcj">
+                            <rect key="frame" x="121" y="8" width="653" height="5"/>
+                        </box>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JSg-qG-f80">
+                            <rect key="frame" x="784" y="3" width="38" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="34" id="Uhy-Es-iFc"/>
+                            </constraints>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="Type:" id="lOY-kS-7a9">
+                                <font key="font" usesAppearanceFont="YES"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Lye-Jv-Qii">
+                            <rect key="frame" x="829" y="-3" width="116" height="25"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="109" id="7cf-rs-ygh"/>
+                            </constraints>
+                            <popUpButtonCell key="cell" type="push" title="All Pass" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="mgY-TH-ASE" id="822-od-1IE">
+                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="menu"/>
+                                <menu key="menu" id="4CS-XZ-EPx">
+                                    <items>
+                                        <menuItem title="All Pass" state="on" id="mgY-TH-ASE"/>
+                                        <menuItem title="Low Pass" tag="1" id="aHC-b8-APs"/>
+                                        <menuItem title="High Pass" tag="2" id="SGp-eK-2dE"/>
+                                        <menuItem title="Band Pass" tag="3" id="Xbb-bc-jec"/>
+                                        <menuItem title="Notch " tag="4" id="eJ3-z4-esd"/>
+                                        <menuItem title="Peaking EQ" tag="5" id="lCV-l7-9xP"/>
+                                    </items>
+                                </menu>
+                            </popUpButtonCell>
+                            <connections>
+                                <action selector="filterTypeUpdated:" target="-2" id="cnU-b3-pEW"/>
+                            </connections>
+                        </popUpButton>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Paw-Cm-Sib">
+                            <rect key="frame" x="951" y="3" width="55" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="51" id="Twt-e1-g1f"/>
+                            </constraints>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="Method:" id="CHy-tS-Ma1">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aZW-jb-RYg">
+                            <rect key="frame" x="1013" y="-3" width="83" height="25"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="76" id="qey-ga-ayU"/>
+                            </constraints>
+                            <popUpButtonCell key="cell" type="push" title="Explicit" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="hfL-JY-svQ" id="Axs-N6-fbB">
+                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="menu"/>
+                                <menu key="menu" id="tN1-ne-w3X">
+                                    <items>
+                                        <menuItem title="Explicit" state="on" id="hfL-JY-svQ" userLabel="Explicit"/>
+                                        <menuItem title="vDSP" id="gMs-9b-mtO" userLabel="vDSP"/>
+                                    </items>
+                                </menu>
+                            </popUpButtonCell>
+                        </popUpButton>
+                    </subviews>
+                    <visibilityPriorities>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                    </visibilityPriorities>
+                    <customSpacing>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                    </customSpacing>
+                </stackView>
+                <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oPI-wC-N8q" customClass="ResponseView" customModule="BiquadFilterFramework" customModuleProvider="target">
+                    <rect key="frame" x="8" y="8" width="1000" height="423"/>
                 </customView>
-                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Lye-Jv-Qii">
-                    <rect key="frame" x="17" y="467" width="147" height="25"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="140" id="Fnk-kN-Abc"/>
-                    </constraints>
-                    <popUpButtonCell key="cell" type="push" title="All Pass" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="mgY-TH-ASE" id="822-od-1IE">
-                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
-                        <menu key="menu" id="4CS-XZ-EPx">
-                            <items>
-                                <menuItem title="All Pass" state="on" id="mgY-TH-ASE"/>
-                                <menuItem title="Low Pass" tag="1" id="aHC-b8-APs"/>
-                                <menuItem title="High Pass" tag="2" id="SGp-eK-2dE"/>
-                                <menuItem title="Band Pass" tag="3" id="Xbb-bc-jec"/>
-                                <menuItem title="Notch " tag="4" id="eJ3-z4-esd"/>
-                                <menuItem title="Peaking EQ" tag="5" id="lCV-l7-9xP"/>
-                            </items>
-                        </menu>
-                    </popUpButtonCell>
-                    <connections>
-                        <action selector="filterTypeUpdated:" target="-2" id="cnU-b3-pEW"/>
-                    </connections>
-                </popUpButton>
+                <stackView distribution="fill" orientation="vertical" alignment="centerX" spacing="6" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TvR-f3-q1d" userLabel="F Stack View">
+                    <rect key="frame" x="1036" y="8" width="20" height="445"/>
+                    <subviews>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iaE-gg-mrL">
+                            <rect key="frame" x="4" y="429" width="12" height="16"/>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="F" id="wc3-0R-j3g">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <slider horizontalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bY0-b1-wEg">
+                            <rect key="frame" x="-2" y="-6" width="24" height="431"/>
+                            <sliderCell key="cell" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="right" sliderType="linear" id="qdK-P0-wbD"/>
+                        </slider>
+                    </subviews>
+                    <visibilityPriorities>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                    </visibilityPriorities>
+                    <customSpacing>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                    </customSpacing>
+                </stackView>
+                <stackView distribution="fill" orientation="vertical" alignment="centerX" spacing="6" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4jd-fR-XA8" userLabel="Q Stack View">
+                    <rect key="frame" x="1081" y="8" width="20" height="445"/>
+                    <subviews>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="71D-Oe-N5Y">
+                            <rect key="frame" x="3" y="429" width="14" height="16"/>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="Q" id="oci-92-v23">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <slider horizontalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="w4f-7t-wiG">
+                            <rect key="frame" x="-2" y="-6" width="24" height="431"/>
+                            <sliderCell key="cell" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="right" sliderType="linear" id="72w-s7-jFe"/>
+                        </slider>
+                    </subviews>
+                    <visibilityPriorities>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                    </visibilityPriorities>
+                    <customSpacing>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                    </customSpacing>
+                </stackView>
             </subviews>
             <constraints>
-                <constraint firstItem="Y7U-2h-5jH" firstAttribute="top" secondItem="R36-UR-7aV" secondAttribute="top" constant="8" id="0n0-Zy-5Il"/>
-                <constraint firstItem="Lye-Jv-Qii" firstAttribute="top" secondItem="R36-UR-7aV" secondAttribute="top" constant="9" id="8cq-O7-Kf7"/>
-                <constraint firstItem="oPI-wC-N8q" firstAttribute="top" secondItem="Y7U-2h-5jH" secondAttribute="bottom" constant="8" id="Nqz-1C-y1O"/>
-                <constraint firstItem="Y7U-2h-5jH" firstAttribute="centerX" secondItem="R36-UR-7aV" secondAttribute="centerX" id="ONo-fd-S3h"/>
-                <constraint firstItem="Lye-Jv-Qii" firstAttribute="leading" secondItem="R36-UR-7aV" secondAttribute="leading" constant="20" symbolic="YES" id="Oj1-pX-MXF"/>
+                <constraint firstItem="oPI-wC-N8q" firstAttribute="top" secondItem="fDU-cO-Utv" secondAttribute="bottom" constant="40" id="1jv-x1-BFm"/>
+                <constraint firstAttribute="trailing" secondItem="fDU-cO-Utv" secondAttribute="trailing" constant="8" id="DFb-rT-Ao0"/>
+                <constraint firstAttribute="bottom" secondItem="TvR-f3-q1d" secondAttribute="bottom" constant="8" id="Fcp-c0-Ypg"/>
+                <constraint firstAttribute="trailing" secondItem="4jd-fR-XA8" secondAttribute="trailing" constant="7" id="JZR-bd-adY"/>
+                <constraint firstItem="TvR-f3-q1d" firstAttribute="leading" secondItem="oPI-wC-N8q" secondAttribute="trailing" constant="28" id="ZAK-Sn-mm9"/>
+                <constraint firstItem="fDU-cO-Utv" firstAttribute="top" secondItem="R36-UR-7aV" secondAttribute="top" constant="8" id="Ze8-To-7Pe"/>
                 <constraint firstAttribute="bottom" secondItem="oPI-wC-N8q" secondAttribute="bottom" constant="8" id="bOT-6Z-Sfb"/>
-                <constraint firstAttribute="trailing" secondItem="oPI-wC-N8q" secondAttribute="trailing" constant="8" id="f78-xv-Qnp"/>
+                <constraint firstAttribute="trailing" secondItem="oPI-wC-N8q" secondAttribute="trailing" constant="100" id="f78-xv-Qnp"/>
+                <constraint firstItem="fDU-cO-Utv" firstAttribute="leading" secondItem="R36-UR-7aV" secondAttribute="leading" constant="8" id="jSR-Ep-4Xl"/>
+                <constraint firstItem="4jd-fR-XA8" firstAttribute="leading" secondItem="TvR-f3-q1d" secondAttribute="trailing" constant="25" id="lT2-II-gHi"/>
+                <constraint firstAttribute="bottom" secondItem="4jd-fR-XA8" secondAttribute="bottom" constant="8" id="mH5-NF-vaX"/>
+                <constraint firstItem="TvR-f3-q1d" firstAttribute="top" secondItem="fDU-cO-Utv" secondAttribute="bottom" constant="18" id="mgT-5Q-teG"/>
                 <constraint firstItem="oPI-wC-N8q" firstAttribute="leading" secondItem="R36-UR-7aV" secondAttribute="leading" constant="8" id="ncK-hk-5iB"/>
+                <constraint firstItem="4jd-fR-XA8" firstAttribute="top" secondItem="fDU-cO-Utv" secondAttribute="bottom" constant="18" id="yNO-SM-9Pg"/>
             </constraints>
-            <point key="canvasLocation" x="139" y="-297"/>
+            <point key="canvasLocation" x="45" y="-391"/>
         </customView>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <view wantsLayer="YES" id="usM-Ct-ETz" userLabel="Compact View">

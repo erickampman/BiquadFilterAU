@@ -25,7 +25,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (AUInternalRenderBlock)internalRenderBlock;
 
 - (NSArray<NSNumber *> *)magnitudesForFrequencies:(NSArray<NSNumber *> *)frequencies;
-
+- (NSArray<NSNumber *> *)magnitudes;
+- (NSArray<NSNumber *> *)ramp;
+- (struct BiquadCoefficientsPOD)kernelCoefficients;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -19,7 +19,8 @@ public class BiquadFilterViewController: AUViewController {
 	private var filterTypeParameter: AUParameter!
     private var parameterObserverToken: AUParameterObserverToken?
 
-    @IBOutlet weak var filterView: FilterView!
+	@IBOutlet weak var filterView: FilterView!
+	@IBOutlet weak var responseView: ResponseView!
 
     @IBOutlet weak var frequencyTextField: TextField!
     @IBOutlet weak var resonanceTextField: TextField!
@@ -95,8 +96,8 @@ public class BiquadFilterViewController: AUViewController {
         // Set the default view configuration.
         viewConfig = expanded
 
-        // Respond to changes in the filterView (frequency and/or response changes).
-        filterView.delegate = self
+//        // Respond to changes in the filterView (frequency and/or response changes).
+//        filterView.delegate = self
 
         #if os(iOS)
         frequencyTextField.delegate = self
@@ -155,8 +156,9 @@ public class BiquadFilterViewController: AUViewController {
 
     private func updateUI() {
         // Set the latest values on the graph view.
-        filterView.frequency = cutoffParameter.value
-        filterView.resonance = resonanceParameter.value
+//        filterView.frequency = cutoffParameter.value
+//        filterView.resonance = resonanceParameter.value
+		
 		
 		// filterType here FIXME
 
@@ -164,12 +166,16 @@ public class BiquadFilterViewController: AUViewController {
         frequencyTextField.text = cutoffParameter.string(fromValue: nil)
         resonanceTextField.text = resonanceParameter.string(fromValue: nil)
 
-        updateFilterViewFrequencyAndMagnitudes()
+//        updateFilterViewFrequencyAndMagnitudes()
 		
 		let intVal = Int(filterTypeParameter.value)
 		filterTypePopup.selectItem(withTag: intVal)
 
-
+//		Update Coefficients here
+		if let au = audioUnit {
+			responseView.coefficients = au.coefficients()
+		}
+		
 //		guard let item = sender.selectedItem else { return }
 //		
 //		audioUnitManager.filterTypeValue = Float(item.tag)
@@ -247,10 +253,11 @@ public class BiquadFilterViewController: AUViewController {
     }
 }
 
+#if false
 extension BiquadFilterViewController: FilterViewDelegate {
     // MARK: FilterViewDelegate
 
-    func updateFilterViewFrequencyAndMagnitudes() {
+    func updateFilterViewFrequencyAndMagnitudesX() {
         guard let audioUnit = audioUnit else { return }
 
         // Get an array of frequencies from the view.
@@ -258,9 +265,17 @@ extension BiquadFilterViewController: FilterViewDelegate {
 
         // Get the corresponding magnitudes from the audio unit.
         let magnitudes = audioUnit.magnitudes(forFrequencies: frequencies)
-
+		let magnitudes2 = audioUnit.magnitudes();
+		print("\(magnitudes2.count)")
         filterView.setMagnitudes(magnitudes)
     }
+	func updateFilterViewFrequencyAndMagnitudes() {
+		guard let audioUnit = audioUnit else { return }
+		
+		let ramp = audioUnit.ramp()
+		
+		
+	}
 
     func filterViewTouchBegan(_ filterView: FilterView) {
         resonanceParameter.setValue(filterView.resonance,
@@ -330,4 +345,6 @@ extension BiquadFilterViewController: UITextFieldDelegate {
         return false
     }
 }
+#endif
+
 #endif

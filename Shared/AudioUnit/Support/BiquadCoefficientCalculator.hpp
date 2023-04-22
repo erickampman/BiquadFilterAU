@@ -11,6 +11,7 @@
 #include <cmath>
 
 #import "BiquadFilterData.h"
+#import "BiquadCoefficientsPOD.h"
 
 struct BiquadInputs {
 	float 					frequency;
@@ -22,20 +23,16 @@ struct BiquadInputs {
 	// meh fit with y = 18.1 * ln(x) - 8.33
 };
 
-struct BiquadCoefficients {
-	float	b0, b1, b2, a1, a2;
-};
-
 class BiquadCoefficientCalculator {
 public:
-	const BiquadCoefficients passthroughCoefficients {
+	constexpr static const BiquadCoefficientsPOD passthroughCoefficients {
 		1, 0, 0, 0, 0,
 	};
 	
 	BiquadCoefficientCalculator() {
 	}
 
-	BiquadCoefficients &calculate(BiquadCoefficients &coefficients,
+	BiquadCoefficientsPOD &calculate(BiquadCoefficientsPOD &coefficients,
 								  BiquadInputs &inputs,
 								  double sampleRate)
 	{
@@ -46,7 +43,7 @@ public:
 	}
 		
 
-	BiquadCoefficients &calculate(BiquadCoefficients &coefficients,
+	BiquadCoefficientsPOD &calculate(BiquadCoefficientsPOD &coefficients,
 								  float frequency, float resonance,
 								  PARAM_ITEM_FILTER_TYPE filterType,
 								  double sampleRate)

@@ -84,8 +84,8 @@ public:
         float b2 = 0.0;
 //		PARAM_ITEM_FILTER_TYPE filterType = PARAM_ITEM_FILTER_TYPE_PASSTHROUGH;
 		
-		BiquadCoefficients biquadCoefficients() {
-			BiquadCoefficients ret{ b0, b1, b2, a1, a2};
+		BiquadCoefficientsPOD biquadCoefficientsPOD() {
+			BiquadCoefficientsPOD ret{ b0, b1, b2, a1, a2};
 			return ret;
 		}
 //
@@ -372,7 +372,7 @@ public:
         }
     }
 	
-	BiquadCoefficients &calculateCoefficients(float frequency, float resonance,
+	BiquadCoefficientsPOD &calculateCoefficients(float frequency, float resonance,
 											  PARAM_ITEM_FILTER_TYPE filterType)
 	{
 		// FIXME move this -- calc for  conversion of q to dbGain
@@ -380,9 +380,15 @@ public:
 		// .10 <= q      <= 25
 		// meh fit with y = 18.1 * ln(x) - 8.33
 		
-		BiquadCoefficients bc = coefficients.biquadCoefficients();
+		BiquadCoefficientsPOD bc = coefficients.biquadCoefficientsPOD();
 
 		return bqcCalculator.calculate(bc, frequency, resonance, filterType, sampleRate);
+	}
+	
+	BiquadCoefficientsPOD &calculateCoefficients() {
+		BiquadCoefficientsPOD bc = coefficients.biquadCoefficientsPOD();
+		
+		return bqcCalculator.calculate(bc, cutoff, resonance, PARAM_ITEM_FILTER_TYPE(filterType), sampleRate);
 	}
 	
 	double magnitudeForFrequency(double inFreq) {
@@ -415,7 +421,6 @@ public:
 //    ParameterRamper resonanceRamper;
 	AUValue cutoff;
 	AUValue resonance;
-	
 	NSUInteger filterType;
 };
 

@@ -12,12 +12,14 @@ The adapter object that provides a Swift-accessible interface to the filter's un
 #import "FilterDSPKernelAdapter.h"
 #import <BiquadFilterFramework/BiquadFilterFramework-Swift.h>
 
+#define MAGNITUDE_POINT_COUNT	256
 
 @implementation FilterDSPKernelAdapter {
     // C++ members need to be ivars; they would be copied on access if they were properties.
     FilterDSPKernel  _kernel;
     BufferedInputBus _inputBus;
 	BiquadCoefficientCalculator *_bqcCalculator;
+	MagnitudeResponseCalculator *mrc;
 }
 
 - (instancetype)init {
@@ -48,7 +50,7 @@ The adapter object that provides a Swift-accessible interface to the filter's un
 }
 
 - (NSArray<NSNumber *> *)magnitudesForFrequencies:(NSArray<NSNumber *> *)frequencies {
-	BiquadCoefficients coefficients;
+	BiquadCoefficientsPOD coefficients;
 	BiquadInputs inputs;
 	inputs.frequency = _kernel.cutoff;
 	inputs.q = _kernel.resonance;
@@ -67,7 +69,7 @@ The adapter object that provides a Swift-accessible interface to the filter's un
 	
     NSMutableArray<NSNumber *> *magnitudes = [NSMutableArray arrayWithCapacity:frequencies.count];
 
-//	MagnitudeResponseCalculator *mrc = [[MagnitudeResponseCalculator alloc] initWithSampleCount:256];
+	mrc = [[MagnitudeResponseCalculator alloc] initWithSampleCount:MAGNITUDE_POINT_COUNT];
 
     for (NSNumber *number in frequencies) {
         double frequency = [number doubleValue];
@@ -76,8 +78,48 @@ The adapter object that provides a Swift-accessible interface to the filter's un
         [magnitudes addObject:@(magnitude)];
     }
 
-
     return [NSArray arrayWithArray:magnitudes];
+}
+
+#if 0
+- (NSArray<NSNumber *> *)magnitudes {
+	BiquadCoefficients &coeffs = _kernel.calculateCoefficients();
+	
+	NSArray<NSNumber *>* mags = [mrc responseWithB0:coeffs.b0 b1:coeffs.b1 b2:coeffs.b2 a1:coeffs.a1 a2:coeffs.a1];
+	
+	return mags;
+}
+#endif
+
+/* 64 floats from 0 to 1 */
+- (NSArray<NSNumber *> *)ramp {
+	return mrc.ramp;
+}
+
+- (NSArray<NSNumber *> *)magnitudes {
+	BiquadCoefficientsPOD cpod = [self kernelCoefficients];
+	BiquadCoefficientsPOD &coeffs = _kernel.calculateCoefficients();
+	// b0, b1, b2, a1, a2;
+	cpod.a1 = coeffs.a1;
+	cpod.a2 = coeffs.a2;
+	cpod.b0 = coeffs.b0;
+	cpod.b1 = coeffs.b1;
+	cpod.b2 = coeffs.b2;
+	
+	return [mrc responseFor:cpod];
+}
+
+- (struct BiquadCoefficientsPOD)kernelCoefficients {
+	BiquadCoefficientsPOD cpod;
+	BiquadCoefficientsPOD &coeffs = _kernel.calculateCoefficients();
+	// b0, b1, b2, a1, a2;
+	cpod.a1 = coeffs.a1;
+	cpod.a2 = coeffs.a2;
+	cpod.b0 = coeffs.b0;
+	cpod.b1 = coeffs.b1;
+	cpod.b2 = coeffs.b2;
+
+	return cpod;
 }
 
 - (void)setParameter:(AUParameter *)parameter value:(AUValue)value {

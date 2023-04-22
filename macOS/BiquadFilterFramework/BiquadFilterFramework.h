@@ -16,6 +16,7 @@ FOUNDATION_EXPORT const unsigned char BiquadFilterFramework_macOSVersionString[]
 // In this header, you should import all the public headers of your framework using statements like #import <FilterDemoFramework/PublicHeader.h>
 #import <BiquadFilterFramework/FilterDSPKernelAdapter.h>
 #import <BiquadFilterFramework/BiquadFilterData.h>
+#import <BiquadFilterFramework/BiquadCoefficientsPOD.h>
 
 @class BiquadFilterAU;
 @class BiquadFilterViewController;
