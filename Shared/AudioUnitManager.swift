@@ -33,6 +33,9 @@ public class AudioUnitManager {
     /// The user-selected audio unit.
     private var audioUnit: BiquadFilterAU?
 
+	/*
+		ELK this delegate is for updating UI OUTSIDE the AU UI.
+	 */
     public weak var delegate: AUManagerDelegate? {
         didSet {
             updateCutoff()
@@ -183,12 +186,16 @@ public class AudioUnitManager {
              The system calls this when one of the parameter values changes.
              You can only update the UI from the main queue.
              */
+
             DispatchQueue.main.async {
+				// update the instantiating App's UI
                 if address == self.cutoffParameter.address {
                     self.updateCutoff()
                 } else if address == self.resonanceParameter.address {
                     self.updateResonance()
                 }
+				// Update the AU's ViewController
+				self.viewController.updateControls(self)
             }
         })
     }

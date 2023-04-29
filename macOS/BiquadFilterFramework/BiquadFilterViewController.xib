@@ -11,8 +11,8 @@
                 <outlet property="compactView" destination="usM-Ct-ETz" id="6tA-ZU-CPN"/>
                 <outlet property="expandedView" destination="R36-UR-7aV" id="2Ns-GU-3Ee"/>
                 <outlet property="filterTypePopup" destination="Lye-Jv-Qii" id="zhc-Nt-RJ5"/>
-                <outlet property="frequencyTextField" destination="gNr-9C-Jcl" id="I5Y-My-cGT"/>
-                <outlet property="resonanceTextField" destination="mNt-J3-k64" id="hem-e4-IoW"/>
+                <outlet property="frequencySlider" destination="bY0-b1-wEg" id="taA-fA-9Qi"/>
+                <outlet property="resonanceSlider" destination="w4f-7t-wiG" id="Aab-Ll-3Wd"/>
                 <outlet property="responseView" destination="oPI-wC-N8q" id="iKL-jC-k7c"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
             </connections>
@@ -138,7 +138,10 @@
                         </textField>
                         <slider horizontalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bY0-b1-wEg">
                             <rect key="frame" x="-2" y="-6" width="24" height="431"/>
-                            <sliderCell key="cell" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="right" sliderType="linear" id="qdK-P0-wbD"/>
+                            <sliderCell key="cell" alignment="left" maxValue="9" doubleValue="5" tickMarkPosition="right" sliderType="linear" id="qdK-P0-wbD"/>
+                            <connections>
+                                <action selector="frequencySliderUpdated:" target="-2" id="jIf-hS-vLK"/>
+                            </connections>
                         </slider>
                     </subviews>
                     <visibilityPriorities>
@@ -163,7 +166,10 @@
                         </textField>
                         <slider horizontalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="w4f-7t-wiG">
                             <rect key="frame" x="-2" y="-6" width="24" height="431"/>
-                            <sliderCell key="cell" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="right" sliderType="linear" id="72w-s7-jFe"/>
+                            <sliderCell key="cell" alignment="left" minValue="0.10000000000000001" maxValue="25" doubleValue="1" tickMarkPosition="right" sliderType="linear" id="72w-s7-jFe"/>
+                            <connections>
+                                <action selector="resonanceSliderUpdated:" target="-2" id="OD6-UI-zT3"/>
+                            </connections>
                         </slider>
                     </subviews>
                     <visibilityPriorities>
@@ -232,9 +238,6 @@
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
-                                <connections>
-                                    <action selector="frequencyUpdated:" target="-2" id="Xmz-vg-cG5"/>
-                                </connections>
                             </textField>
                         </gridCell>
                         <gridCell row="wNw-Rk-kNh" column="Hru-wE-T25" id="gkm-lV-TaS">
@@ -265,9 +268,6 @@
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
-                                <connections>
-                                    <action selector="resonanceUpdated:" target="-2" id="xdc-8B-QJx"/>
-                                </connections>
                             </textField>
                         </gridCell>
                         <gridCell row="ieJ-oZ-bA2" column="Hru-wE-T25" id="JMX-lh-wBy">

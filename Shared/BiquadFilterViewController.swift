@@ -14,6 +14,8 @@ public class BiquadFilterViewController: AUViewController {
 
     private var viewConfig: AUAudioUnitViewConfiguration!
 
+	private let cutoffValueTransformer = CutoffValueTransformer()
+	
     private var cutoffParameter: AUParameter!
 	private var resonanceParameter: AUParameter!
 	private var filterTypeParameter: AUParameter!
@@ -22,9 +24,12 @@ public class BiquadFilterViewController: AUViewController {
 	@IBOutlet weak var filterView: FilterView!
 	@IBOutlet weak var responseView: ResponseView!
 
-    @IBOutlet weak var frequencyTextField: TextField!
-    @IBOutlet weak var resonanceTextField: TextField!
-    
+//    @IBOutlet weak var frequencyTextField: TextField!
+//    @IBOutlet weak var resonanceTextField: TextField!
+ 
+	@IBOutlet weak var frequencySlider: Slider!
+	@IBOutlet weak var resonanceSlider: Slider!
+
 	@IBOutlet weak var filterTypePopup: NSPopUpButton!
 	
     var observer: NSKeyValueObservation?
@@ -163,13 +168,16 @@ public class BiquadFilterViewController: AUViewController {
 		// filterType here FIXME
 
         // Set the latest text field values.
-        frequencyTextField.text = cutoffParameter.string(fromValue: nil)
-        resonanceTextField.text = resonanceParameter.string(fromValue: nil)
+//        frequencyTextField.text = cutoffParameter.string(fromValue: nil)
+//        resonanceTextField.text = resonanceParameter.string(fromValue: nil)
 
 //        updateFilterViewFrequencyAndMagnitudes()
 		
 		let intVal = Int(filterTypeParameter.value)
 		filterTypePopup.selectItem(withTag: intVal)
+
+		frequencySlider.floatValue = cutoffValueTransformer.rawToUI(cutoffParameter.value)
+		resonanceSlider.floatValue = resonanceParameter.value
 
 //		Update Coefficients here
 		if let au = audioUnit {
@@ -182,26 +190,52 @@ public class BiquadFilterViewController: AUViewController {
 
     }
 
-    @IBAction func frequencyUpdated(_ sender: TextField) {
-        update(parameter: cutoffParameter, with: sender)
+    @IBAction func frequencyTextUpdated(_ sender: TextField) {
+        updateFromTextField(parameter: cutoffParameter, with: sender)
     }
 
-    @IBAction func resonanceUpdated(_ sender: TextField) {
-        update(parameter: resonanceParameter, with: sender)
+    @IBAction func resonanceTextUpdated(_ sender: TextField) {
+        updateFromTextField(parameter: resonanceParameter, with: sender)
     }
 
-    func update(parameter: AUParameter, with textField: TextField) {
+    func updateFromTextField(parameter: AUParameter, with textField: TextField) {
         guard let value = (textField.text as NSString?)?.floatValue else { return }
         parameter.value = value
         textField.text = parameter.string(fromValue: nil)
     }
 	
+	/*
+		frequencyValueForSliderLocation was taken from MainViewController.swift,
+		written by Apple.
+		see LICENSE.txt, included in this project.
+	 */
+	private func frequencyValueForSliderLocation(_ location: Float) -> Float {
+		var value = pow(2, location)
+		value = (value - 1) / 511
+
+		value *= (defaultMaxHertz - defaultMinHertz)
+
+		return value + defaultMinHertz
+	}
+	
+	@IBAction func frequencySliderUpdated(_ sender: Slider) {
+		cutoffParameter.value = cutoffValueTransformer.uiToRaw(sender.floatValue)
+	}
+
+	@IBAction func resonanceSliderUpdated(_ sender: Slider) {
+		resonanceParameter.value = sender.floatValue
+	}
+
 	@IBAction func filterTypeUpdated(_ sender: NSPopUpButton) {
 		
 		guard let value = sender.selectedItem?.tag else {
 			return
 		}
 		filterTypeParameter.value = AUValue(value)
+	}
+	
+	func updateControls(_ auMgr: AudioUnitManager) {
+		
 	}
 
     // MARK: View Configuration Selection
