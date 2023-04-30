@@ -189,11 +189,16 @@ public class AudioUnitManager {
 
             DispatchQueue.main.async {
 				// update the instantiating App's UI
-                if address == self.cutoffParameter.address {
-                    self.updateCutoff()
-                } else if address == self.resonanceParameter.address {
-                    self.updateResonance()
-                }
+				switch address {
+				case self.cutoffParameter.address:
+					self.updateCutoff()
+				case self.resonanceParameter.address:
+					self.updateResonance()
+				case self.filterTypeParameter.address:
+					self.updateFilterType()
+				default:
+					break
+				}
 				// Update the AU's ViewController
 				self.viewController.updateControls(self)
             }

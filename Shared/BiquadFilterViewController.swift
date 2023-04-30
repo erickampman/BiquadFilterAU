@@ -145,7 +145,7 @@ public class BiquadFilterViewController: AUViewController {
 
                 // An arbitrary queue is calling this closure. Ensure
                 // all UI updates dispatch back to the main thread.
-				if [cutoff.address, resonance.address,filterType.address].contains(address) {
+				if [cutoff.address, resonance.address, filterType.address].contains(address) {
                     DispatchQueue.main.async {
                         self.updateUI()
                     }
